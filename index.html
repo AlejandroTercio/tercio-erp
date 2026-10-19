@@ -1279,6 +1279,7 @@ function renderImport(){
       ${imp.faltan.length?`<p class="sub">Columnas no encontradas: ${esc(imp.faltan.join(', '))}.</p>`:''}
       <div class="scroll"><table><thead><tr><th>Empresa</th><th>Oficio</th><th>Teléfono</th><th>Email</th><th>Ubicación</th><th>Zona</th><th>Encaje</th></tr></thead><tbody>${ok.slice(0,5).map(i=>`<tr><td>${esc(i.lead.empresa)}</td><td>${esc(i.lead.oficio)}</td><td>${esc(i.lead.telefono)}</td><td>${esc(i.lead.email)}</td><td>${esc(i.lead.ubicacion)}</td><td>${esc(i.lead.zona)}</td><td>${esc(i.lead.encaje)}</td></tr>`).join('')}</tbody></table></div>
       <h3>Tu columna Estado en el nuevo embudo</h3>
+      <p class="sub">Todo entra como <b>Oportunidad</b>. Cambia una fila de aquí abajo solo si ese estado debe empezar en otra etapa.</p>
       <div class="stack">${Object.keys(est).map(k=>`<label>${k?esc(k):'(vacío)'} · ${est[k]} filas<select data-impmap="${esc(k)}">${ORDEN.map(o=>`<option value="${o}"${imp.map[k]===o?' selected':''}>${ETAPAS[o]}</option>`).join('')}</select></label>`).join('')}</div>
       <p class="sub">Propuesta enviada, Alta probabilidad y Ganada quedan con importe pendiente para que lo completes en la ficha.</p>
       <label style="flex-direction:row;align-items:center;gap:8px"><input type="checkbox" id="impLlam" style="width:auto"${imp.llamada?' checked':''}> Crear una llamada en el historial con la "Fecha contacto"</label>
@@ -1306,7 +1307,7 @@ function loadRows(rows,name){
     else if(ks.some(k=>seen.has(k))) it.dup='repetida';
     else ks.forEach(k=>seen.add(k));
   });
-  const map={};items.filter(i=>!i.dup).forEach(i=>{if(!(i.estadoRaw in map)) map[i.estadoRaw]=L.guessEstado(i.estadoRaw);});
+  const map={};items.filter(i=>!i.dup).forEach(i=>{if(!(i.estadoRaw in map)) map[i.estadoRaw]='oportunidad';});  /* regla: todo lo que entra del Excel es una Oportunidad; solo cambia si tú lo eliges en el desplegable */
   const faltan=['empresa','oficio','telefono','email','ubicacion','web','encaje','estado','fecha','zona'].filter(k=>det.cols[k]===undefined);
   S.imp={stage:'ready',fileName:name,items,map,llamada:true,faltan};
   renderImport();
